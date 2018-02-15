@@ -1,0 +1,6 @@
+-Wall
+-fexceptions
+-g
+-Wextra
+-Wall
+-std=c++11
