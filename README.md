@@ -3,7 +3,7 @@
 This Script Compile C++ sources.
 You need the bin folder of your compiler in your path.
 The output file name is main.exe.
-The outpur path is bin\debug\main.exe.
+The output path is bin\debug\main.exe.
 The script make a object path (obj\subfolders|sources).
 The script looks for the files from where it is and subfolders.
 The script can make a simple built with the last modified files or a make rebuilt.
