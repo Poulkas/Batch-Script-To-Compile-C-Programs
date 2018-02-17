@@ -1,6 +1,7 @@
 # Batch-Script-To-Compile-C-Programs
 
 This Script Compile C++ sources.
+You need the bin folder of your compiler in your path.
 The output file name is main.exe.
 The outpur path is bin\debug\main.exe.
 The script make a object path (obj\subfolders|sources).
