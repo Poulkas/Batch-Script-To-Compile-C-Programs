@@ -12,11 +12,19 @@ CALL SET /P "compileType=Type:" || SET compileType=BUILT
 IF NOT EXIST FilesLogs.log type nul > FilesLogs.log
 IF %compileType%==r type nul > FilesLogs.log
 
-:::::::LOAD COMPILE OPTIONS:::::::
-FOR /f %%I IN (CompilationFlags.options) DO CALL SET "COMPILE_FLAGS=!COMPILE_FLAGS!%%I "
-FOR /f %%I IN (IncludeFiles.linker) DO CALL SET "INCLUDE_PATH=-I!INCLUDE_PATH!%%I "
-FOR /f %%I IN (LinkerFiles.linker) DO CALL SET "LIB_PATH=-L!LIB_PATH!%%I "
-FOR /f %%I IN (LinkerOptions.options) DO CALL SET "LINKER_OP=!LINKER_OP!%%I "
+:::::::VALIDATION REQUIRED FOLDERS:::::::
+IF NOT EXIST %OUTPUT_PATH% MD %OUTPUT_PATH%
+IF NOT EXIST %OBJECT_PATH% MD %OBJECT_PATH%
+
+:::::::LOAD COMPILE OPTIONS AND VALIDATION REQUIRED FILES:::::::
+IF NOT EXIST "CompilationFlags.options" type nul > "CompilationFlags.options"
+FOR /F %%I IN (CompilationFlags.options) DO CALL SET "COMPILE_FLAGS=!COMPILE_FLAGS!%%I "
+IF NOT EXIST "IncludeFiles.linker" type nul > "IncludeFiles.linker"
+FOR /F %%I IN (IncludeFiles.linker) DO CALL SET "INCLUDE_PATH=-I!INCLUDE_PATH!%%I "
+IF NOT EXIST "LinkerFiles.linker" type nul > "LinkerFiles.linker"
+FOR /F %%I IN (LinkerFiles.linker) DO CALL SET "LIB_PATH=-L!LIB_PATH!%%I "
+IF NOT EXIST "LinkerOptions.options" type nul > "LinkerOptions.options"
+FOR /F %%I IN (LinkerOptions.options) DO CALL SET "LINKER_OP=!LINKER_OP!%%I "
 
 :::::::LOAD C AND C++ FILES AND VERIFY LAST MODIFICATED:::::::
 SET /A iter=0
@@ -79,7 +87,7 @@ PAUSE
 
 EXIT /B
 
-:SubStringPath
+:SubStringPath :::FILE PATH
 setlocal
     SET NEW_STRING=%~1
     SET TEMP_PATH=
@@ -96,7 +104,7 @@ setlocal
 endlocal & SET NEW_PATH=%TEMP_PATH%
 GOTO :EOF
 
-:compareDateModification ::File Name, Date to Compare
+:compareDateModification :::File Name, Date to Compare
 setlocal
 SET needsToUpdate=false
 FOR /F "skip=5 tokens=1,2 delims= " %%X IN ('DIR /TW %~1') DO (
@@ -108,7 +116,7 @@ FOR /F "skip=5 tokens=1,2 delims= " %%X IN ('DIR /TW %~1') DO (
 endlocal & SET addFile=%needsToUpdate%
 GOTO :EOF
 
-:writeLastModificated ::File Name
+:writeLastModificated :::File Name
 setlocal
 FOR /F "skip=5 tokens=1,2 delims= " %%A IN ('DIR %~1') DO (
     @ECHO %~1 %%A %%B >> FilesLogs.log
